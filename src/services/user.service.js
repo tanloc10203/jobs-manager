@@ -1,8 +1,9 @@
 "use strict";
 
-const { roles } = require("../const");
+const { Roles } = require("../const");
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const { Types } = require("mongoose");
 
 class UserService {
   static getAll = async () => {
@@ -13,7 +14,7 @@ class UserService {
     fullName,
     password,
     email,
-    role = [roles.USER],
+    role = [Roles.USER],
   }) => {
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -25,6 +26,14 @@ class UserService {
     });
 
     return await userInsert.save();
+  };
+
+  static findUserById = async (userId) => {
+    return await userModel.findById(new Types.ObjectId(userId));
+  };
+
+  static findUserByEmail = async (email) => {
+    return await userModel.findOne({ email }).exec();
   };
 }
 

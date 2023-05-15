@@ -63,6 +63,15 @@ class UnauthorizedRequestError extends ErrorResponse {
   }
 }
 
+class RequestTimeoutError extends ErrorResponse {
+  constructor(
+    message = ReasonPhrases.REQUEST_TIMEOUT,
+    statusCode = StatusCodes.REQUEST_TIMEOUT
+  ) {
+    super(message, statusCode);
+  }
+}
+
 module.exports = {
   NotFoundRequestError,
   InternalServerRequestError,
@@ -71,4 +80,5 @@ module.exports = {
   ConflictRequestError,
   ForbiddenRequestError,
   UnauthorizedRequestError,
+  RequestTimeoutError,
 };

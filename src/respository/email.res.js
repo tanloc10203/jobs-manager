@@ -1,10 +1,6 @@
 const nodemailer = require("nodemailer");
 const configs = require("../config");
-const kickbox = require("kickbox")
-  .client(
-    "live_73006b9ba90fc062b1b180e198f122c04ec9afe164c41a378231aa411f52432f"
-  )
-  .kickbox();
+const kickbox = require("kickbox").client(configs.kixbox.key).kickbox();
 
 async function checkEmail(email) {
   return new Promise((resovle, reject) => {

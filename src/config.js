@@ -11,6 +11,11 @@ const configs = {
     refreshToken: process.env.EXPIRED_REFRESH_TOKEN || "1w",
     accessToken: process.env.EXPIRED_ACCESS_TOKEN || "2d",
   },
+  kixbox: {
+    key:
+      process.env.KIXBOX_KEY ||
+      "live_73006b9ba90fc062b1b180e198f122c04ec9afe164c41a378231aa411f52432f",
+  },
 };
 
 module.exports = configs;

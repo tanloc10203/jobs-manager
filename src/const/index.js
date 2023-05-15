@@ -1,4 +1,4 @@
-const roles = {
+const Roles = {
   USER: "01",
   WRITER: "02",
   EDITOR: "03",
@@ -27,7 +27,7 @@ const PermissionsApiKey = {
 };
 
 module.exports = {
-  roles,
+  Roles,
   refreshTokenCookieOptions,
   Headers,
   PermissionsApiKey,

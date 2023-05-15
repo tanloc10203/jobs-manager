@@ -105,6 +105,7 @@ class AppMiddleware {
    * @param {import("express").NextFunction} next
    */
   static catchInternalServerError = (error, req, res, next) => {
+    console.log("ERROR:::", error);
     const statusCode = error.status || statusCodesCore.INTERNAL_SERVER_ERROR;
     const message = error.message || reasonPhrasesCore.INTERNAL_SERVER_ERROR;
     return res.status(statusCode).json({

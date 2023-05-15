@@ -2,6 +2,8 @@
 
 const _ = require("lodash");
 const OtpGenerator = require("otp-generator");
+const { Types } = require("mongoose");
+const { BadRequestError } = require("../responses/error.response");
 
 const getInfoData = ({ fileds = [], object = {} }) => {
   return _.pick(object, fileds);
@@ -18,6 +20,16 @@ const teamplateHTML = {
     <div><strong><i>Xin chân thành cảm ơn!</i></strong></div>
     `;
   },
+  forgotPwd: ({ fullName, email, urlVerify }) => {
+    return `
+    <h1>Thay đổi mật khẩu</h1>
+    <p>Xin chào. ${fullName} <i>(${email})</i></p>
+    <p>Bạn nhận được email này vì đã click vào quên mật khẩu trên website jobs của chúng tôi</p>
+    <p style="color: red">Nếu những thông tin trên là chính xác. Vui lòng click vào link bên dưới để xác nhận và hoàn tất thủ tục thay đổi mật khẩu</>
+    <div><a href=${urlVerify} target="_blank"><strong>Link thay đổi</strong></a></div><br>
+    <div><strong><i>Xin chân thành cảm ơn!</i></strong></div>
+    `;
+  },
 };
 
 const createOTP = () => {
@@ -31,8 +43,15 @@ const createOTP = () => {
   return OTP;
 };
 
+const validateObjectId = ({ id, message = "Id không hợp lệ" }) => {
+  if (!Types.ObjectId.isValid(id)) {
+    throw new BadRequestError(message);
+  }
+};
+
 module.exports = {
   getInfoData,
   teamplateHTML,
   createOTP,
+  validateObjectId,
 };

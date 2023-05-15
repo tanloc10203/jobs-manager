@@ -40,6 +40,10 @@ var userSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    key_reset_pwd: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
