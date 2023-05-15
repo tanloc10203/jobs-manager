@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const initialState = {
   isLoading: false,
@@ -33,7 +34,11 @@ const authSlice = createSlice({
     },
     signUpSucceed(state) {
       state.isLoading = false;
-      toast.success("Đăng ký thành công.");
+      Swal.fire({
+        title: "Đăng ký thành công.",
+        text: "Vui lòng kiểm tra email của bạn để xác thực tài khoản.",
+        icon: "success",
+      });
     },
     signUpFailed(state, { payload }) {
       state.isLoading = false;

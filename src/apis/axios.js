@@ -1,9 +1,11 @@
 import axios from "axios";
-import authAPI from "./auth";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_END_POINT + "/api/v1",
   withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 instance.interceptors.request.use(

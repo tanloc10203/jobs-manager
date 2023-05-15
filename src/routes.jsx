@@ -28,6 +28,7 @@ const BookingInfo = Loadable(lazy(() => import("./pages/BookingInfo")));
 const VNPayReturn = Loadable(lazy(() => import("./pages/VNPayReturn")));
 const VerifyOtp = Loadable(lazy(() => import("./pages/VerifyOtp")));
 const Profile = Loadable(lazy(() => import("./pages/Profile")));
+const ConfirmAccount = Loadable(lazy(() => import("./pages/ConfirmAccount")));
 
 // Manager hotel
 const HotelManagePage = Loadable(
@@ -198,6 +199,10 @@ export default function Router() {
           element: <Home />,
         },
         {
+          path: "confirm/account/:userId",
+          element: <ConfirmAccount />,
+        },
+        {
           path: "return",
           element: <VNPayReturn />,
         },
@@ -229,7 +234,7 @@ export default function Router() {
           path: "booking/info",
           element: <BookingInfo />,
         },
-        { path: "change-password", element: <ChangePwd /> },
+        { path: "confirm/account/change/pwd/:userId", element: <ChangePwd /> },
         { path: "sign-up", element: <Register /> },
         { path: "404", element: <NotFound /> },
         { path: "*", element: <Navigate to="/404" /> },

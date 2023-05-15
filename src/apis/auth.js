@@ -11,6 +11,14 @@ const authAPI = {
     return instance.post(url + "/sign-up", data);
   },
 
+  verifyAccount(data) {
+    return instance.post(url + "/verify/account", data);
+  },
+
+  resendVerifyAccount(data) {
+    return instance.post(url + "/resend/verify/account", data);
+  },
+
   signUpHotel(data) {
     return instance.post(url + "/register-hotel", data);
   },
@@ -35,8 +43,8 @@ const authAPI = {
     return instance.post(url + "/forgot-password", body);
   },
 
-  changePwd({ body, query }) {
-    return instance.post(url + "/change-password" + query, body);
+  changePwd(body) {
+    return instance.post(url + "/change-password", body);
   },
 
   getCurrentUser(accessToken) {

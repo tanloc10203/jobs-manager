@@ -26,13 +26,15 @@ export default function LoginForm() {
   const dispatch = useDispatch();
 
   const LoginSchema = Yup.object().shape({
-    username: Yup.string().required("Tài khoản là trường bắt buộc."),
+    email: Yup.string()
+      .email("E-mail phải là một địa chỉ email hợp lệ")
+      .required("E-mail là trường bắt buộc"),
     password: Yup.string().required("Mật khẩu là trường  bắt buộc."),
   });
 
   const formik = useFormik({
     initialValues: {
-      username: "",
+      email: "",
       password: "",
       remember: true,
     },
@@ -40,6 +42,7 @@ export default function LoginForm() {
     onSubmit: (values) => {
       return new Promise((resolve, reject) => {
         dispatch(appActions.setOpenOverlay(true));
+        dispatch(appActions.setText("Đăng đăng nhập..."));
 
         setTimeout(() => {
           dispatch(authActions.signInStart(values));
@@ -72,12 +75,12 @@ export default function LoginForm() {
           <Stack spacing={3}>
             <TextField
               fullWidth
-              autoComplete="username"
+              autoComplete="email"
               type="text"
-              label="Tài khoản"
-              {...getFieldProps("username")}
-              error={Boolean(touched.username && errors.username)}
-              helperText={touched.username && errors.username}
+              label="Email"
+              {...getFieldProps("email")}
+              error={Boolean(touched.email && errors.email)}
+              helperText={touched.email && errors.email}
             />
 
             <TextField

@@ -14,10 +14,12 @@ function* fetchSignUp({ payload }) {
     if (response) {
       yield put(authActions.signUpSucceed());
       yield put(appActions.setOpenOverlay(false));
+      yield put(appActions.setText(""));
       history.push("/sign-in");
     }
   } catch (error) {
     yield put(appActions.setOpenOverlay(false));
+    yield put(appActions.setText(""));
     if (error.response) {
       yield put(authActions.signUpFailed(error.response.data.message));
     } else {
@@ -66,20 +68,21 @@ function* fetchSignIn({ payload }) {
   try {
     const response = yield call(authAPI.signIn, payload);
 
+    console.log("saga", response);
+
     if (response) {
-      yield put(authActions.signInSucceed(response.accessToken));
+      const { tokens } = response.metadata;
 
-      localStorage.setItem("accessToken", response.accessToken);
+      yield put(authActions.signInSucceed(tokens.accessToken));
+      localStorage.setItem("accessToken", tokens.accessToken);
+      history.push("/");
 
-      if (response.isHome) {
-        history.push("/");
-      } else {
-        history.push("/manager/app");
-      }
       yield put(appActions.setOpenOverlay(false));
+      yield put(appActions.setText(""));
     }
   } catch (error) {
     yield put(appActions.setOpenOverlay(false));
+    yield put(appActions.setText(""));
     if (error.response) {
       yield put(authActions.signInFailed(error.response.data.message));
     } else {

@@ -8,8 +8,9 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { authAPI } from "~/apis";
 import { appActions } from "~/features/app/appSlice";
 
@@ -17,6 +18,7 @@ const theme = createTheme();
 
 export default function ChangePwd() {
   const { search } = useLocation();
+  const { userId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -28,26 +30,42 @@ export default function ChangePwd() {
       return toast.error("Vui lòng nhập mật khẩu mới.");
     }
 
+    if (data.get("password").length < 5) {
+      return toast.error("Nhập ít nhất 5 kí tự");
+    }
+
     dispatch(appActions.setOpenOverlay(true));
+    dispatch(appActions.setText("Đang thực hiện thay đổi..."));
 
     const values = {
-      body: {
-        password: data.get("password"),
-      },
-      query: search,
+      userId: userId,
+      password: data.get("password"),
+      token: search.split("=")[1],
     };
 
     try {
-      const response = await authAPI.changePwd({ ...values });
+      const response = await authAPI.changePwd(values);
 
       if (response) {
         dispatch(appActions.setOpenOverlay(false));
+        dispatch(appActions.setText(""));
         toast.success("Thay đổi mật khẩu thành công.");
         navigate("/sign-in", { replace: true });
       }
     } catch (error) {
       dispatch(appActions.setOpenOverlay(false));
-      toast.error(error.message);
+      dispatch(appActions.setText(""));
+      let message = error.message;
+
+      if (error?.response && error.response.data) {
+        message = error.response.data.message;
+      }
+
+      return Swal.fire({
+        icon: "error",
+        title: "Đã xảy ra lỗi...",
+        text: `${message}`,
+      });
     }
   };
 
