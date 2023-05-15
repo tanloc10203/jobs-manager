@@ -1,0 +1,5 @@
+@url = http://localhost:8888/api/v1/user
+
+### User register
+GET {{url}}/
+x-api-key: 697f85b77736e7d3e845792bbd80e17734934437b3ad7424bcab81b6730038a55b35cb14c31e42c4ca3c3e2289f2cd47e636ee87b423b183eb893f8641ebd8b9

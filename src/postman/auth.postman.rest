@@ -1,0 +1,38 @@
+@url = http://localhost:8888/api/v1/auth
+
+###
+GET {{url}}
+
+### User register
+POST {{url}}/sign-up
+Content-Type: application/json
+
+{
+  "fullName": "Cẩm Thi",
+  "password": "camthi1234",
+  "email": "camthisdfsdfsdfssdfsfdfs1@gmail.com"
+} 
+
+### User login
+POST {{url}}/sign-in
+Content-Type: application/json
+x-api-key: 697f85b77736e7d3e845792bbd80e17734934437b3ad7424bcab81b6730038a55b35cb14c31e42c4ca3c3e2289f2cd47e636ee87b423b183eb893f8641ebd8b9
+
+{
+  "username": "camthi1234",
+  "password": "camthi1234"
+} 
+
+### User logout
+POST {{url}}/sign-out
+Content-Type: application/json
+x-api-key: 697f85b77736e7d3e845792bbd80e17734934437b3ad7424bcab81b6730038a55b35cb14c31e42c4ca3c3e2289f2cd47e636ee87b423b183eb893f8641ebd8b9
+x-client-id: 645883cecb4f0115baf0f13e
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDU4ODNjZWNiNGYwMTE1YmFmMGYxM2UiLCJ1c2VybmFtZSI6ImNhbXRoaTEyMzQiLCJpYXQiOjE2ODM2NDA4NDgsImV4cCI6MTY4MzgxMzY0OH0.V6_Ahsc2hFEa96zLD5XiZTzjWZKvcAAmA9gsbbjzvVc
+
+### User refreshToken
+POST {{url}}/refresh-token
+x-api-key: 697f85b77736e7d3e845792bbd80e17734934437b3ad7424bcab81b6730038a55b35cb14c31e42c4ca3c3e2289f2cd47e636ee87b423b183eb893f8641ebd8b9
+x-client-id: 645883cecb4f0115baf0f13e
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDU4ODNjZWNiNGYwMTE1YmFmMGYxM2UiLCJ1c2VybmFtZSI6ImNhbXRoaTEyMzQiLCJpYXQiOjE2ODM2NDQ1OTEsImV4cCI6MTY4MzgxNzM5MX0.YU-AEVMTuwt7INfNSYdASJCSmkiXj2N0D08kw32sZyI
+refreshtoken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDU4ODNjZWNiNGYwMTE1YmFmMGYxM2UiLCJ1c2VybmFtZSI6ImNhbXRoaTEyMzQiLCJpYXQiOjE2ODM2NDU2NjQsImV4cCI6MTY4MzgxODQ2NH0.SGeJBpR7pg8DJMZ87uVNukHF3ql1u121HSKaaTSsgH0
