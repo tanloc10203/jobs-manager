@@ -68,15 +68,15 @@ function* fetchSignIn({ payload }) {
   try {
     const response = yield call(authAPI.signIn, payload);
 
-    console.log("saga", response);
-
     if (response) {
-      const { tokens } = response.metadata;
+      const { tokens, user } = response.metadata;
 
       yield put(authActions.signInSucceed(tokens.accessToken));
-      localStorage.setItem("accessToken", tokens.accessToken);
-      history.push("/");
 
+      localStorage.setItem("accessToken", tokens.accessToken);
+      localStorage.setItem("x-client-id", user._id);
+
+      yield call([history, history.push], "/");
       yield put(appActions.setOpenOverlay(false));
       yield put(appActions.setText(""));
     }
@@ -100,18 +100,7 @@ function* getCurrentUser({ payload }) {
   try {
     const response = yield authAPI.getCurrentUser(payload.accessToken);
 
-    if (response) {
-      if (
-        payload?.location &&
-        payload.location === config.app.key.manageAdmin
-      ) {
-        if (response.data.role === config.user.role.USER) {
-          return history.push("/");
-        }
-      }
-
-      yield put(authActions.getCurrentUserSucceed(response.data));
-    }
+    yield put(authActions.getCurrentUserSucceed(response.metadata));
   } catch (error) {
     if (error.response) {
       if (error.response.data.message === "jwt refreshToken expired") {

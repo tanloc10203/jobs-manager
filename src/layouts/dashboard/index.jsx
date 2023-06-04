@@ -41,19 +41,19 @@ export default function DashboardLayout() {
   const dispatch = useDispatch();
   const locations = useLocation();
 
-  useEffect(() => {
-    if (accessToken) {
-      dispatch(
-        authActions.getCurrentUserStart({
-          accessToken,
-          location:
-            locations.pathname.search("manager") !== -1
-              ? config.app.key.manageAdmin
-              : null,
-        })
-      );
-    }
-  }, [accessToken]);
+  // useEffect(() => {
+  //   if (accessToken) {
+  //     dispatch(
+  //       authActions.getCurrentUserStart({
+  //         accessToken,
+  //         location:
+  //           locations.pathname.search("manager") !== -1
+  //             ? config.app.key.manageAdmin
+  //             : null,
+  //       })
+  //     );
+  //   }
+  // }, [accessToken]);
 
   return (
     <RootStyle>

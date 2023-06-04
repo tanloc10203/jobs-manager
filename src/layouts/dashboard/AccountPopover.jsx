@@ -1,25 +1,25 @@
 import { useMemo, useRef, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 // @mui
-import { alpha } from "@mui/material/styles";
 import {
+  Avatar,
   Box,
   Divider,
-  Typography,
-  Stack,
-  MenuItem,
-  Avatar,
   IconButton,
+  MenuItem,
+  Stack,
+  Typography,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 // components
 import MenuPopover from "../../components/MenuPopover";
 // mocks_
-import account from "../../_mock/account";
-import { useDispatch, useSelector } from "react-redux";
-import { authActions, authState } from "~/features/authentication/authSlice";
-import { appActions } from "~/features/app/appSlice";
 import _ from "lodash";
+import { useDispatch, useSelector } from "react-redux";
 import config from "~/configs";
+import { appActions } from "~/features/app/appSlice";
+import { authActions, authState } from "~/features/authentication/authSlice";
+import account from "../../_mock/account";
 
 export default function AccountPopover() {
   const anchorRef = useRef(null);
@@ -148,7 +148,7 @@ export default function AccountPopover() {
         {user && (
           <Box sx={{ my: 1.5, px: 2.5 }}>
             <Typography variant="subtitle2" noWrap>
-              {user.last_name + " " + user.first_name}
+              {user.full_name}
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
               {user.email}

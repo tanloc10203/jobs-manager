@@ -4,10 +4,7 @@ import { useDispatch } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import Logo from "~/components/Logo";
 import Page from "~/components/Page";
-import { appActions } from "~/features/app/appSlice";
 import useResponsive from "~/hooks/useResponsive";
-import { RegisterForm } from "~/sections/auth/register";
-import { authActions } from "../authSlice";
 
 const RootStyle = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
@@ -52,21 +49,15 @@ const ContentStyle = styled("div")(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Register() {
+export default function RegisterAdmin() {
   const smUp = useResponsive("up", "sm");
 
   const mdUp = useResponsive("up", "md");
 
   const dispatch = useDispatch();
 
-  const handleSumbit = (value) => {
-    dispatch(appActions.setOpenOverlay(true));
-    dispatch(appActions.setText("Đang đăng ký vui lòng đợi..."));
-    dispatch(authActions.signUpStart(value));
-  };
-
   return (
-    <Page title="Đăng ký">
+    <Page title="Đăng ký admin">
       <RootStyle>
         <HeaderStyle>
           <Logo />
@@ -102,7 +93,7 @@ export default function Register() {
               Điền đầy đủ thông tin của bạn.
             </Typography>
 
-            <RegisterForm onSubmit={handleSumbit} />
+            {/* <RegisterForm onSubmit={handleSumbit} /> */}
 
             {!smUp && (
               <Typography variant="body2" sx={{ mt: 3, textAlign: "center" }}>
