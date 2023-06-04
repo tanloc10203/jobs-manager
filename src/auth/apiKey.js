@@ -8,6 +8,13 @@ const {
 const ApiKeyService = require("../services/apiKey.service");
 
 const apiKey = async (req, res, next) => {
+  /**
+    - Kiểm tra nếu không có api_key.
+      - Kiểm tra xem địa chỉ ip request có tồn tại (đã từng sử dụng api_key).
+        - Cấp lại api_key
+      - Nếu không? thì thêm địa chỉ ip vào đã sử dụng api_key.
+   */
+
   const key = req.headers[Headers.API_KEY]?.toString();
 
   console.log("key:::", key);

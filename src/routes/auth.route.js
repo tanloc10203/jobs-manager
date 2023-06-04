@@ -1,9 +1,9 @@
 "use strict";
 
 const { Router } = require("express");
-const { AppMiddleware } = require("../../middleware");
-const authController = require("../../controllers/auth.controller");
-const { authentication } = require("../../auth/authUtils");
+const { AppMiddleware } = require("../middleware");
+const authController = require("../controllers/auth.controller");
+const { authentication } = require("../auth/authUtils");
 const router = Router();
 
 router.get("/");
@@ -28,6 +28,11 @@ router.post(
 
 // authentication //
 router.use(AppMiddleware.catchErrorHandler(authentication));
+
+router.get(
+  "/sign-in",
+  AppMiddleware.catchErrorHandler(authController.getCurrentUserSignIn)
+);
 
 router.post(
   "/sign-out",

@@ -3,6 +3,7 @@ const Roles = {
   WRITER: "02",
   EDITOR: "03",
   ADMIN: "00",
+  SUPPER_ADMIN: "xx",
 };
 
 const refreshTokenCookieOptions = {
@@ -21,9 +22,9 @@ const Headers = {
 };
 
 const PermissionsApiKey = {
-  0: ["0000"],
-  1: ["1111"],
-  2: ["2222"],
+  0: ["0000"], // SUPPER_ADMIN
+  1: ["1111"], // ADMIN
+  2: ["2222"], // USER
 };
 
 module.exports = {

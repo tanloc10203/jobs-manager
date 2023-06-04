@@ -16,7 +16,7 @@ const reasonPhrasesCore = require("../core/reasonPhrases.core");
 class AppMiddleware {
   static cors = () => {
     return corsMiddlware({
-      origin: configs.baseUrlClient,
+      origin: [configs.baseUrlClient, "http://192.168.1.14:3000"],
       credentials: true,
       methods: ["GET", "POST", "PATCH", "DELETE"],
       allowedHeaders: [

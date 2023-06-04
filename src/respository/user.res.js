@@ -12,7 +12,12 @@ const generateKeyChangePwd = async () => {
   return { token: OTP, tokenHash: hashOTP };
 };
 
+const findUserIsAdmin = async () => {
+  return await userModel.find({ api_key_admin: { $ne: null } }).lean();
+};
+
 module.exports = {
   findUserByEmail,
+  findUserIsAdmin,
   generateKeyChangePwd,
 };

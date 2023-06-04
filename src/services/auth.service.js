@@ -329,6 +329,10 @@ class AuthService {
 
     return tokens;
   };
+
+  static getCurrentUserSignIn = async (userId) => {
+    return await UserService.findUserById(userId, "-password");
+  };
 }
 
 module.exports = AuthService;

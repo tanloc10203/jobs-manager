@@ -28,8 +28,8 @@ class UserService {
     return await userInsert.save();
   };
 
-  static findUserById = async (userId) => {
-    return await userModel.findById(new Types.ObjectId(userId));
+  static findUserById = async (userId, select = "") => {
+    return await userModel.findById(new Types.ObjectId(userId)).select(select);
   };
 
   static findUserByEmail = async (email) => {

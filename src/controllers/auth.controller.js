@@ -183,6 +183,25 @@ class AuthController {
       }),
     }).send(res);
   };
+
+  /**
+   *
+   * @param {import("express").Request} req
+   * @param {import("express").Response} res
+   */
+  getCurrentUserSignIn = async (req, res) => {
+    const keyStore = req.keyStore;
+
+    validateObjectId({
+      id: keyStore.user,
+      message: `\`_id\` = ${keyStore.user} không hợp lệ`,
+    });
+
+    return new Ok({
+      message: "Get Current User Sign In Success.",
+      metadata: await AuthService.getCurrentUserSignIn(keyStore.user),
+    }).send(res);
+  };
 }
 
 module.exports = new AuthController();

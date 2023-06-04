@@ -4,6 +4,7 @@ const _ = require("lodash");
 const OtpGenerator = require("otp-generator");
 const { Types } = require("mongoose");
 const { BadRequestError } = require("../responses/error.response");
+const IP_ADDRESS = require("ipaddr.js");
 
 const getInfoData = ({ fileds = [], object = {} }) => {
   return _.pick(object, fileds);
@@ -32,8 +33,8 @@ const teamplateHTML = {
   },
 };
 
-const createOTP = () => {
-  const OTP = OtpGenerator.generate(6, {
+const createOTP = (number = 6) => {
+  const OTP = OtpGenerator.generate(number, {
     digits: true,
     lowerCaseAlphabets: false,
     upperCaseAlphabets: false,
@@ -49,9 +50,20 @@ const validateObjectId = ({ id, message = "Id không hợp lệ" }) => {
   }
 };
 
+function cleanupAddress(str) {
+  // if it's a valid ipv6 address, and if its a mapped ipv4 address,
+  // then clean it up. otherwise return the original string.
+  if (IP_ADDRESS.IPv6.isValid(str)) {
+    const addr = IP_ADDRESS.IPv6.parse(str);
+    if (addr.isIPv4MappedAddress()) return addr.toIPv4Address().toString();
+  }
+  return str === "::1" ? "127.0.0.1" : str;
+}
+
 module.exports = {
   getInfoData,
   teamplateHTML,
   createOTP,
   validateObjectId,
+  cleanupAddress,
 };

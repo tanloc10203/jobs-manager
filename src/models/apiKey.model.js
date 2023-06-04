@@ -20,6 +20,14 @@ var apiKeyTokenSchema = new mongoose.Schema(
       required: true,
       enum: ["0000", "1111", "2222"],
     },
+    ip_address: {
+      type: String,
+      required: true,
+    },
+    ip_address_used: {
+      type: [String],
+      default: [],
+    },
     status: {
       type: mongoose.Schema.Types.Boolean,
       default: false,

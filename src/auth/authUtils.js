@@ -7,6 +7,8 @@ const {
 } = require("../responses/error.response");
 const { Headers } = require("../const");
 const KeyTokenService = require("../services/keyToken.service");
+const ApiKeyService = require("../services/apiKey.service");
+const _ = require("lodash");
 
 const createTokenPair = (payload, publicKey, privateKey) => {
   const accessToken = JWT.sign(payload, publicKey, {
@@ -31,15 +33,6 @@ const verifyToken = (token, key) => {
 };
 
 const authentication = async (req, res, next) => {
-  /**
-   * 1 - Check userId missing?
-   * 2 - get accessToken
-   * 3 - verify Token
-   * 4 - check user in dbs?
-   * 5 - check keyStore with this userId?
-   * 6 - Ok all => return next().
-   */
-
   const userId = req.headers[Headers.CLIENT_ID]?.toString();
 
   if (!userId) {

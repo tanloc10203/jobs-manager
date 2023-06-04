@@ -44,6 +44,18 @@ var userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    api_key_admin: {
+      type: String,
+      default: "",
+    },
+    user_login: {
+      type: Array,
+      default: [],
+    },
+    ip_address: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
