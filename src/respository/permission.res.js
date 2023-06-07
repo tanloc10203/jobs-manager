@@ -13,8 +13,6 @@ const isAdminFirstStartApplication = async () => {
   */
   const apiKeyStore = await findUserIsAdmin();
 
-  console.log(apiKeyStore);
-
   if (apiKeyStore.length > 1) {
     throw new ForbiddenRequestError("You are not allowed...");
   }

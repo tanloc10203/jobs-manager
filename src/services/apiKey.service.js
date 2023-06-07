@@ -16,6 +16,7 @@ class ApiKeyService {
       permissions: permission,
       status: true,
       ip_address: ipAddress,
+      ip_address_used: [ipAddress],
     });
 
     return await keyApiStore.save();
@@ -27,6 +28,10 @@ class ApiKeyService {
 
   static findAllApiKey = async () => {
     return await apiKeyModel.find().lean();
+  };
+
+  static findApiKeyByPermission = async (permission = PermissionsApiKey[2]) => {
+    return await apiKeyModel.findOne({ permissions: permission });
   };
 }
 

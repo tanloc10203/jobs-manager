@@ -4,10 +4,9 @@ const { Ok } = require("../responses/success.response");
 const {
   isAdminFirstStartApplication,
 } = require("../respository/permission.res");
-const IP = require("ip");
-const { cleanupAddress } = require("../utils");
 const PermissionService = require("../services/permission.service");
 const { BadRequestError } = require("../responses/error.response");
+const { ForbiddenRequestError } = require("../responses/error.response");
 
 class PermissionController {
   /**
@@ -17,16 +16,13 @@ class PermissionController {
    * @returns
    */
   checkAPIKey = async (req, res) => {
-    const ip =
-      req.headers["X-Client-IP"] ||
-      req.headers["x-forwarded-for"] ||
-      req.socket.remoteAddress;
+    const ip = req.ipClient;
 
     return new Ok({
       message: "Check Start Application Success",
       metadata: {
         ...(await isAdminFirstStartApplication()),
-        ip: cleanupAddress(ip),
+        ip,
       },
     }).send(res);
   };
@@ -38,10 +34,13 @@ class PermissionController {
    * @returns
    */
   createAdmin = async (req, res) => {
-    const ip =
-      req.headers["X-Client-IP"] ||
-      req.headers["x-forwarded-for"] ||
-      req.socket.remoteAddress;
+    const checkAdmin = await isAdminFirstStartApplication();
+
+    if (checkAdmin.start) {
+      throw new ForbiddenRequestError("Bạn không được phép truy cập.");
+    }
+
+    const ip = req.ipClient;
 
     const body = req.body;
 
@@ -56,9 +55,8 @@ class PermissionController {
           email: body.email,
           password: body.password,
           fullName: body.fullName,
-          ipAddress: cleanupAddress(ip),
+          ipAddress: ip,
         })),
-        ip: cleanupAddress(ip),
       },
     }).send(res);
   };

@@ -3,7 +3,7 @@
 const { Roles, PermissionsApiKey } = require("../const");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
-const { createOTP } = require("../utils");
+const { createOTP, getInfoData } = require("../utils");
 const EmailService = require("./email.service");
 const ApiKeyService = require("./apiKey.service");
 
@@ -57,6 +57,7 @@ class PermissionService {
         object: user,
       }),
       apiKey: apiKeyStore.key,
+      keyAdmin: keyAdmin,
     };
   };
 }
