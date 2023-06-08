@@ -23,6 +23,7 @@ class AppMiddleware {
         "Access-Control-Allow-Headers",
         "X-Requested-With,content-type, Accept,Authorization,Origin",
         "x-client-id",
+        "x-api-key",
         "refreshtoken",
         "authorization",
       ],

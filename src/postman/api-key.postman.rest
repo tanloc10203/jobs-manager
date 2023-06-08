@@ -1,0 +1,10 @@
+@url = http://localhost:8888/api/v1/api-key
+
+### User register
+GET {{url}}/
+x-api-key: d333c9d096525a90772d0a94cc99f6d7088e02dccaf9112ed0780b14577a9da5307473b43f0d1be1965bcae6619c45cd4a802e649924201c0a09cd3695652c72
+
+### DELETE USER.
+DELETE {{url}}/647eaf33d4b3e5c0e471cd7a
+
+// API KEY 50654312222025731248021940938505

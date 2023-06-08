@@ -19,6 +19,23 @@ const ipAddress = (req, res, next) => {
   return next();
 };
 
+/**
+ * @description Lấy địa user agent (device) của người dùng.
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
+ */
+const deviceUserAgent = (req, res, next) => {
+  const device = req.headers["user-agent"];
+
+  console.log("[device request] => ", device);
+
+  req.device = device;
+
+  return next();
+};
+
 module.exports = {
   ipAddress,
+  deviceUserAgent,
 };

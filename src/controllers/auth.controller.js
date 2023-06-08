@@ -44,6 +44,8 @@ class AuthController {
     const response = await AuthService.signIn({
       password: body.password,
       email: body.email,
+      ip: req.ipClient,
+      device: req.device,
     });
 
     res.cookie(
@@ -68,6 +70,8 @@ class AuthController {
    * @param {import("express").Response} res
    */
   logout = async (req, res) => {
+    res.clearCookie();
+    req.session.destroy();
     return new Ok({
       message: "Logout success.",
       metadata: await AuthService.logout(req.keyStore),
@@ -200,6 +204,55 @@ class AuthController {
     return new Ok({
       message: "Get Current User Sign In Success.",
       metadata: await AuthService.getCurrentUserSignIn(keyStore.user),
+    }).send(res);
+  };
+
+  /**
+   *
+   * @param {import("express").Request} req
+   * @param {import("express").Response} res
+   */
+  verifyAdmin = async (req, res) => {
+    const keyStore = req.keyStore;
+    const codeAdmin = req.body.code;
+    const ip = req.ipClient;
+    const device = req.device;
+
+    if (!codeAdmin) {
+      throw new BadRequestError("Missing body code...");
+    }
+
+    validateObjectId({
+      id: keyStore.user,
+      message: `\`_id\` = ${keyStore.user} không hợp lệ`,
+    });
+
+    return new Ok({
+      message: "Verify Admin Success.",
+      metadata: await AuthService.verifyAdmin({
+        id: keyStore.user,
+        code: codeAdmin,
+        ip: "192.168.1.2",
+        device,
+      }),
+    }).send(res);
+  };
+
+  /**
+   *
+   * @param {import("express").Request} req
+   * @param {import("express").Response} res
+   */
+  verifyAdminDevice = async (req, res) => {
+    const userId = req.body.userId;
+
+    if (!userId) {
+      throw new BadRequestError("Missing body userId...");
+    }
+
+    return new Ok({
+      message: "Verify Admin Device Success.",
+      metadata: await AuthService.verifyAdminDevice(userId),
     }).send(res);
   };
 }

@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const { AppMiddleware } = require("./middleware");
-const { ipAddress } = require("./auth/ipAddress");
+const { ipAddress, deviceUserAgent } = require("./auth/ipAddress");
 
 require("./database/init.mongodb");
 
@@ -19,6 +19,7 @@ app.use(AppMiddleware.compression());
 app.use(AppMiddleware.session(app));
 
 app.use(ipAddress);
+app.use(deviceUserAgent);
 app.use("/", require("./routes"));
 app.use(AppMiddleware.catchNotFoundResourse);
 app.use(AppMiddleware.catchInternalServerError);

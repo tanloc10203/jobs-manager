@@ -12,7 +12,7 @@ const {
 const crypto = require("node:crypto");
 const KeyTokenService = require("./keyToken.service");
 const { createTokenPair } = require("../auth/authUtils");
-const { getInfoData } = require("../utils");
+const { getInfoData, createOTP } = require("../utils");
 const { checkEmail } = require("../respository/email.res");
 const EmailService = require("./email.service");
 const {
@@ -23,6 +23,8 @@ const UserService = require("./user.service");
 const configs = require("../config");
 const TokenService = require("../services/token.service");
 const { compareToken } = require("../respository/token.res");
+const { Roles, PermissionsApiKey } = require("../const");
+const ApiKeyService = require("./apiKey.service");
 
 class AuthService {
   static refreshToken = async ({ refreshToken, user, keyStore }) => {
@@ -67,6 +69,76 @@ class AuthService {
       user,
       tokens,
     };
+  };
+
+  static verifyAdmin = async ({ id, code, ip, device }) => {
+    const user = await UserService.findUserById(id);
+
+    if (!user) {
+      throw new ForbiddenRequestError("Bạn không có quyền truy cập!");
+    }
+
+    const codeCompare = await bcrypt.compare(code, user.api_key_admin);
+
+    if (!codeCompare) {
+      throw new ForbiddenRequestError("Sai mã code vui lòng thử lại...");
+    }
+
+    const newDevice = {
+      ip,
+      device,
+    };
+
+    if (!user.user_login.length) {
+      user.user_login = [newDevice, ...user.user_login];
+      await user.save();
+    } else {
+      const deviceIndex = user.user_login.findIndex(
+        (item) => item.device === device && item.ip === ip
+      );
+
+      if (deviceIndex === -1) {
+        // gửi mail xác thực
+        const date = new Date();
+        const userId = user._id;
+        const urlVerify = `${configs.baseUrlClient}/verify-admin-device?uId=${userId}`;
+
+        user.user_login_temp = [newDevice];
+
+        await user.save();
+
+        await EmailService.sendEmailVerifyAdmin({
+          toEmail: user.email,
+          device,
+          ip,
+          timeLogin: date,
+          urlVerify,
+        });
+
+        throw new ForbiddenRequestError(
+          "Tài khoản của bạn đã đăng nhập ở nơi khác. Vui lòng xác thực email để được tiếp tục"
+        );
+      }
+    }
+
+    return getInfoData({ fileds: ["full_name", "_id", "email"], object: user });
+  };
+
+  static verifyAdminDevice = async (userId) => {
+    const user = await UserService.findUserById(userId);
+
+    if (!user) {
+      throw new ForbiddenRequestError("Bạn không có quyền truy cập!");
+    }
+
+    const loginTemp = user.user_login_temp[0];
+
+    user.user_login = [loginTemp, ...user.user_login];
+    user.user_login_temp = [];
+
+    await user.save();
+
+    return true;
   };
 
   static signUp = async ({ fullName, password, email }) => {
@@ -133,6 +205,26 @@ class AuthService {
     }
 
     userHolder.verify = true;
+
+    if (userHolder.roles.includes(Roles.SUPPER_ADMIN)) {
+      const keyAdmin = `${createOTP(16)}${createOTP(16)}`;
+
+      const keyAdminHash = await bcrypt.hash(keyAdmin, 10);
+
+      userHolder.api_key_admin = keyAdminHash;
+
+      const apiKeyStore = await ApiKeyService.findApiKeyByPermission(
+        PermissionsApiKey[0]
+      );
+
+      await EmailService.sendEmailInforAdmin({
+        displayName: userHolder.full_name,
+        timeReg: userHolder.createdAt,
+        codeAdmin: keyAdmin,
+        toEmail: userHolder.email,
+        apiKey: apiKeyStore.key,
+      });
+    }
 
     await userHolder.save();
     await tokenStore.deleteOne();
@@ -228,7 +320,7 @@ class AuthService {
     };
   };
 
-  static signIn = async ({ email, password }) => {
+  static signIn = async ({ email, password, ip, device }) => {
     const user = await UserService.findUserByEmail(email);
 
     if (!user) {
@@ -249,8 +341,26 @@ class AuthService {
 
     const tokens = await AuthService.generateKeyPairSyncLv2(user);
 
+    let isAdmin = false;
+
+    if (user.roles.includes(Roles.SUPPER_ADMIN)) {
+      isAdmin = true;
+    }
+
+    const newDevice = {
+      ip,
+      device,
+    };
+
+    user.user_login = [newDevice, ...user.user_login];
+
+    await user.save();
+
     return {
-      user: getInfoData({ fileds: ["_id", "full_name"], object: user }),
+      user: {
+        ...getInfoData({ fileds: ["_id", "full_name"], object: user }),
+        isAdmin,
+      },
       tokens,
     };
   };

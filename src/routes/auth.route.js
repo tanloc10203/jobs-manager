@@ -10,6 +10,11 @@ router.get("/");
 router.post("/sign-up", AppMiddleware.catchErrorHandler(authController.signUp));
 router.post("/sign-in", AppMiddleware.catchErrorHandler(authController.signIn));
 router.post(
+  "/verify-admin-device",
+  AppMiddleware.catchErrorHandler(authController.verifyAdminDevice)
+);
+
+router.post(
   "/verify/account",
   AppMiddleware.catchErrorHandler(authController.verifyAccout)
 );
@@ -29,6 +34,10 @@ router.post(
 // authentication //
 router.use(AppMiddleware.catchErrorHandler(authentication));
 
+router.post(
+  "/verify-admin",
+  AppMiddleware.catchErrorHandler(authController.verifyAdmin)
+);
 router.get(
   "/sign-in",
   AppMiddleware.catchErrorHandler(authController.getCurrentUserSignIn)

@@ -49,7 +49,29 @@ var userSchema = new mongoose.Schema(
       default: "",
     },
     user_login: {
-      type: Array,
+      type: [
+        {
+          ip: String,
+          device: String,
+          time: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+      default: [],
+    },
+    user_login_temp: {
+      type: [
+        {
+          ip: String,
+          device: String,
+          time: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
       default: [],
     },
     ip_address: {

@@ -3,7 +3,7 @@
 const { Roles, PermissionsApiKey } = require("../const");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/user.model");
-const { createOTP, getInfoData } = require("../utils");
+const { getInfoData } = require("../utils");
 const EmailService = require("./email.service");
 const ApiKeyService = require("./apiKey.service");
 
@@ -22,18 +22,11 @@ class PermissionService {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const keyAdmin = `${createOTP(16)}${createOTP(16)}`;
-
-    console.log("Key ADMIN:::", keyAdmin);
-
-    const keyAdminHash = await bcrypt.hash(keyAdmin, 10);
-
     const userInsert = new userModel({
       full_name: fullName,
       password: passwordHash,
       email: email,
       roles: role,
-      api_key_admin: keyAdminHash,
       ip_address: ipAddress,
     });
 
@@ -57,7 +50,6 @@ class PermissionService {
         object: user,
       }),
       apiKey: apiKeyStore.key,
-      keyAdmin: keyAdmin,
     };
   };
 }

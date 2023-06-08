@@ -11,7 +11,7 @@ async function checkEmail(email) {
   });
 }
 
-const sendEmailVerifyAccount = async ({ subject, html, to }) => {
+const sendEmail = async ({ subject, html, to }) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     service: "gmail",
@@ -34,5 +34,5 @@ const sendEmailVerifyAccount = async ({ subject, html, to }) => {
 
 module.exports = {
   checkEmail,
-  sendEmailVerifyAccount,
+  sendEmail,
 };
