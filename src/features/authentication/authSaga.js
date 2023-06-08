@@ -5,6 +5,8 @@ import config from "~/configs";
 import { history } from "~/utils";
 import { appActions } from "../app/appSlice";
 import { authActions } from "./authSlice";
+import permissionAPI from "~/apis/permission";
+import instance from "~/apis/axios";
 
 // * Sign UP
 function* fetchSignUp({ payload }) {
@@ -30,6 +32,36 @@ function* fetchSignUp({ payload }) {
 
 function* watchFetchSignUp() {
   yield takeLatest(authActions.signUpStart.type, fetchSignUp);
+}
+
+// * Sign UP ADMIN
+function* fetchSignUpAdmin({ payload }) {
+  try {
+    const response = yield call(permissionAPI.createAdmin, payload);
+
+    console.log("response register admin:::", response);
+
+    if (response) {
+      localStorage.setItem(config.Headers.API_KEY, response.metadata.apiKey);
+
+      yield put(authActions.signUpAdminSucceed());
+      yield put(appActions.setOpenOverlay(false));
+      yield put(appActions.setText(""));
+      history.push("/sign-in");
+    }
+  } catch (error) {
+    yield put(appActions.setOpenOverlay(false));
+    yield put(appActions.setText(""));
+    if (error.response) {
+      yield put(authActions.signUpAdminFailed(error.response.data.message));
+    } else {
+      yield put(authActions.signUpAdminFailed(error.message));
+    }
+  }
+}
+
+function* watchFetchSignUpAdmin() {
+  yield takeLatest(authActions.signUpAdminStart.type, fetchSignUpAdmin);
 }
 
 // * verify Sign UP HOTEL
@@ -63,6 +95,39 @@ function* watchFetchVerifySignUpHotel() {
   );
 }
 
+// * verify Sign In admin
+function* fetchVerifySignInAdmin({ payload }) {
+  try {
+    const response = yield call(authAPI.verifyadmin, payload);
+
+    console.log(response);
+
+    if (response) {
+      yield put(authActions.verifySignInAdminSuccess(response.metadata));
+      yield put(appActions.setOpenOverlay(false));
+      yield put(appActions.setText(""));
+      history.push(`/manager/app`);
+    }
+  } catch (error) {
+    yield put(appActions.setOpenOverlay(false));
+    yield put(appActions.setText(""));
+    if (error.response) {
+      yield put(
+        authActions.verifySignInAdminFailed(error.response.data.message)
+      );
+    } else {
+      yield put(authActions.verifySignInAdminFailed(error.message));
+    }
+  }
+}
+
+function* watchFetchVerifySignInAdmin() {
+  yield takeLatest(
+    authActions.verifySignInAdminStart.type,
+    fetchVerifySignInAdmin
+  );
+}
+
 // * Sign In
 function* fetchSignIn({ payload }) {
   try {
@@ -71,14 +136,18 @@ function* fetchSignIn({ payload }) {
     if (response) {
       const { tokens, user } = response.metadata;
 
-      yield put(authActions.signInSucceed(tokens.accessToken));
+      localStorage.setItem(config.Headers.ACCESSTOKEN, tokens.accessToken);
+      localStorage.setItem(config.Headers.CLIENT_ID, user._id);
 
-      localStorage.setItem("accessToken", tokens.accessToken);
-      localStorage.setItem("x-client-id", user._id);
+      if (user.isAdmin) {
+        yield call([history, history.push], "/verify-admin");
+      } else {
+        yield call([history, history.push], "/");
+      }
 
-      yield call([history, history.push], "/");
       yield put(appActions.setOpenOverlay(false));
       yield put(appActions.setText(""));
+      yield put(authActions.signInSucceed(tokens.accessToken));
     }
   } catch (error) {
     yield put(appActions.setOpenOverlay(false));
@@ -190,6 +259,8 @@ function* authSaga() {
     watchSignOut(),
     watchFetchGetUserSignInWithGoogle(),
     watchFetchVerifySignUpHotel(),
+    watchFetchSignUpAdmin(),
+    watchFetchVerifySignInAdmin(),
   ]);
 }
 

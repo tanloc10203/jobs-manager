@@ -21,6 +21,13 @@ const config = {
       HOTEL: "HOTEL",
     },
   },
+  Headers: {
+    API_KEY: "x-api-key",
+    AUTHORIZATION: "authorization",
+    CLIENT_ID: "x-client-id",
+    REFRESH_TOKEN: "refreshtoken",
+    ACCESSTOKEN: "accessToken",
+  },
 };
 
 export default config;

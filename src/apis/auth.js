@@ -54,6 +54,14 @@ const authAPI = {
       },
     });
   },
+
+  verifyadmin(data) {
+    return instance.post(url + "/verify-admin", data);
+  },
+
+  verifyAdminDevice(data) {
+    return instance.post(url + "/verify-admin-device", data);
+  },
 };
 
 export default authAPI;

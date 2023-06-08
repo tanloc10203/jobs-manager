@@ -1,6 +1,6 @@
-import { BaseOptionChartStyle } from "./components/chart/BaseOptionChart";
 import Overlay from "./components/Overlay";
 import ScrollToTop from "./components/ScrollToTop";
+import { BaseOptionChartStyle } from "./components/chart/BaseOptionChart";
 import Router from "./routes";
 import ThemeProvider from "./theme";
 

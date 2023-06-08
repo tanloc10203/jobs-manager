@@ -2,11 +2,10 @@ import { lazy } from "react";
 import { Navigate, useRoutes } from "react-router-dom";
 import Loadable from "./components/Loadable";
 import PrivateRoutes from "./components/private-routes";
-import DashboardLayout from "./layouts/dashboard";
-import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
-import SignInLayout from "./layouts/signInLayout";
 import PassLogin from "./components/private-routes/PassLogin";
-import permissionAPI from "./apis/permission";
+import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
+import DashboardLayout from "./layouts/dashboard";
+import SignInLayout from "./layouts/signInLayout";
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +29,10 @@ const VNPayReturn = Loadable(lazy(() => import("./pages/VNPayReturn")));
 const VerifyOtp = Loadable(lazy(() => import("./pages/VerifyOtp")));
 const Profile = Loadable(lazy(() => import("./pages/Profile")));
 const ConfirmAccount = Loadable(lazy(() => import("./pages/ConfirmAccount")));
+const VerifyAdmin = Loadable(lazy(() => import("./pages/VerifyAdmin")));
+const VerifyAdminDevice = Loadable(
+  lazy(() => import("./pages/VerifyAdminDevice"))
+);
 
 // Manager hotel
 const HotelManagePage = Loadable(
@@ -101,98 +104,98 @@ const RegisterAdmin = Loadable(lazy(() => import("./pages/RegisterAdmin")));
 
 export default function Router() {
   return useRoutes([
-    // {
-    //   path: "/manager",
-    //   element: (
-    //     <PrivateRoutes>
-    //       <DashboardLayout />
-    //     </PrivateRoutes>
-    //   ),
-    //   children: [
-    //     { path: "app", element: <DashboardApp /> },
-    //     { path: "user", element: <UserPage /> },
-    //     {
-    //       path: "hotel",
-    //       element: <HotelManagePage />,
-    //     },
-    //     {
-    //       path: "hotel/add",
-    //       element: <HotelAddEdit />,
-    //     },
-    //     {
-    //       path: "hotel/update/:hotelId",
-    //       element: <HotelAddEdit />,
-    //     },
-    //     {
-    //       path: "floor",
-    //       element: <FloorManagePage />,
-    //     },
-    //     {
-    //       path: "floor/add",
-    //       element: <FloorAddEdit />,
-    //     },
-    //     {
-    //       path: "floor/update/:floorId",
-    //       element: <FloorAddEdit />,
-    //     },
-    //     {
-    //       path: "device",
-    //       element: <DeviceManagePage />,
-    //     },
-    //     {
-    //       path: "device/add",
-    //       element: <DeviceAddEdit />,
-    //     },
-    //     {
-    //       path: "device/update/:deviceId",
-    //       element: <DeviceAddEdit />,
-    //     },
-    //     {
-    //       path: "room",
-    //       element: <RoomManagePage />,
-    //     },
-    //     {
-    //       path: "room/add",
-    //       element: <RoomAddEdit />,
-    //     },
-    //     {
-    //       path: "room/update/:roomId",
-    //       element: <RoomAddEdit />,
-    //     },
-    //     {
-    //       path: "room-type",
-    //       element: <RoomTypeManagePage />,
-    //     },
-    //     {
-    //       path: "room-type/add",
-    //       element: <RoomTypeAddEdit />,
-    //     },
-    //     {
-    //       path: "room-type/update/:roomTypeId",
-    //       element: <RoomTypeAddEdit />,
-    //     },
-    //     {
-    //       path: "status",
-    //       element: <StatusManagePage />,
-    //     },
-    //     {
-    //       path: "status/add",
-    //       element: <StatusAddEdit />,
-    //     },
-    //     {
-    //       path: "status/update/:statusId",
-    //       element: <StatusAddEdit />,
-    //     },
-    //     {
-    //       path: "concern",
-    //       element: <ConcernManagePage />,
-    //     },
-    //     {
-    //       path: "booking",
-    //       element: <BookingManagePage />,
-    //     },
-    //   ],
-    // },
+    {
+      path: "/manager",
+      element: (
+        <PrivateRoutes>
+          <DashboardLayout />
+        </PrivateRoutes>
+      ),
+      children: [
+        { path: "app", element: <DashboardApp /> },
+        { path: "user", element: <UserPage /> },
+        {
+          path: "hotel",
+          element: <HotelManagePage />,
+        },
+        {
+          path: "hotel/add",
+          element: <HotelAddEdit />,
+        },
+        {
+          path: "hotel/update/:hotelId",
+          element: <HotelAddEdit />,
+        },
+        {
+          path: "floor",
+          element: <FloorManagePage />,
+        },
+        {
+          path: "floor/add",
+          element: <FloorAddEdit />,
+        },
+        {
+          path: "floor/update/:floorId",
+          element: <FloorAddEdit />,
+        },
+        {
+          path: "device",
+          element: <DeviceManagePage />,
+        },
+        {
+          path: "device/add",
+          element: <DeviceAddEdit />,
+        },
+        {
+          path: "device/update/:deviceId",
+          element: <DeviceAddEdit />,
+        },
+        {
+          path: "room",
+          element: <RoomManagePage />,
+        },
+        {
+          path: "room/add",
+          element: <RoomAddEdit />,
+        },
+        {
+          path: "room/update/:roomId",
+          element: <RoomAddEdit />,
+        },
+        {
+          path: "room-type",
+          element: <RoomTypeManagePage />,
+        },
+        {
+          path: "room-type/add",
+          element: <RoomTypeAddEdit />,
+        },
+        {
+          path: "room-type/update/:roomTypeId",
+          element: <RoomTypeAddEdit />,
+        },
+        {
+          path: "status",
+          element: <StatusManagePage />,
+        },
+        {
+          path: "status/add",
+          element: <StatusAddEdit />,
+        },
+        {
+          path: "status/update/:statusId",
+          element: <StatusAddEdit />,
+        },
+        {
+          path: "concern",
+          element: <ConcernManagePage />,
+        },
+        {
+          path: "booking",
+          element: <BookingManagePage />,
+        },
+      ],
+    },
     {
       path: "/",
       element: <LogoOnlyLayout />,
@@ -240,8 +243,10 @@ export default function Router() {
         { path: "confirm/account/change/pwd/:userId", element: <ChangePwd /> },
         { path: "sign-up", element: <Register /> },
         { path: "sign-up-admin", element: <RegisterAdmin /> },
+        { path: "verify-admin", element: <VerifyAdmin /> },
+        { path: "verify-admin-device", element: <VerifyAdminDevice /> },
         { path: "404", element: <NotFound /> },
-        { path: "*", element: <Navigate to="/404" /> },
+        // { path: "*", element: <Navigate to="/404" /> },
       ],
     },
     {

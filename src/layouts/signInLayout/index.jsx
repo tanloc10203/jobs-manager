@@ -1,6 +1,6 @@
 import { Card, Container, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Link as RouterLink, Outlet } from "react-router-dom";
+import { Outlet, Link as RouterLink } from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import Logo from "./../../components/Logo";
 import Page from "./../../components/Page";

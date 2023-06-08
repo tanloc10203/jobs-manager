@@ -1,17 +1,16 @@
-import React, { useEffect, useLayoutEffect } from "react";
-import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import _ from "lodash";
-import { Navigate, useLoaderData } from "react-router-dom";
-import { authState } from "~/features/authentication/authSlice";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import permissionAPI from "~/apis/permission";
+import { authState } from "~/features/authentication/authSlice";
 import { history } from "~/utils";
 
 function PassLogin({ children }) {
   const { accessToken } = useSelector(authState);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     (async () => {
       const response = await permissionAPI.checkFirstStartApp();
 
@@ -31,9 +30,9 @@ function PassLogin({ children }) {
     })();
   }, []);
 
-  if (accessToken) {
-    return <Navigate to="/manager/app" />;
-  }
+  // if (accessToken) {
+  //   return <Navigate to="/manager/app" />;
+  // }
 
   return children;
 }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { default as configApp } from "~/configs";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_END_POINT + "/api/v1",
@@ -10,15 +11,20 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   function (config) {
-    const token = localStorage.getItem("accessToken");
-    const id = localStorage.getItem("x-client-id");
+    const token = localStorage.getItem(configApp.Headers.ACCESSTOKEN);
+    const apiKey = localStorage.getItem(configApp.Headers.API_KEY);
+    const clientId = localStorage.getItem(configApp.Headers.CLIENT_ID);
 
     if (token) {
       config.headers.Authorization = token;
     }
 
-    if (id) {
-      config.headers["x-client-id"] = id;
+    if (apiKey) {
+      config.headers[configApp.Headers.API_KEY] = apiKey;
+    }
+
+    if (clientId) {
+      config.headers[configApp.Headers.CLIENT_ID] = clientId;
     }
 
     return config;

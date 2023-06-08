@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import config from "~/configs";
 
 const initialState = {
   isLoading: false,
@@ -46,6 +47,24 @@ const authSlice = createSlice({
       toast.error(payload);
     },
 
+    // * SIGN UP ADMIN
+    signUpAdminStart(state, actions) {
+      state.isLoading = true;
+    },
+    signUpAdminSucceed(state) {
+      state.isLoading = false;
+      Swal.fire({
+        title: "Đăng ký thành công.",
+        text: "Vui lòng kiểm tra email của bạn để xác thực tài khoản.",
+        icon: "success",
+      });
+    },
+    signUpAdminFailed(state, { payload }) {
+      state.isLoading = false;
+      state.error = payload;
+      toast.error(payload);
+    },
+
     // * SIGN UP HOTEL
     signUpHotelStart(state, actions) {
       state.isLoading = true;
@@ -54,7 +73,7 @@ const authSlice = createSlice({
       state.isLoading = false;
     },
 
-    // * SIGN UP
+    // * VERIFY SIGN UP
     verifySignUpHotelStart(state, actions) {
       state.isLoading = true;
     },
@@ -66,6 +85,25 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.error = payload;
       toast.error(payload);
+    },
+
+    // * VERIFY SIGN IN ADMIN
+    verifySignInAdminStart(state, actions) {
+      state.isLoading = true;
+    },
+    verifySignInAdminSuccess(state, { payload }) {
+      state.isLoading = false;
+      state.user = payload;
+      toast.success("Xác thực thành công.");
+    },
+    verifySignInAdminFailed(state, { payload }) {
+      state.isLoading = false;
+      state.error = payload;
+      Swal.fire({
+        title: "Đã xảy ra lỗi...",
+        text: payload,
+        icon: "error",
+      });
     },
 
     // * GET CURENT USER
@@ -100,7 +138,7 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.user = {};
       state.accessToken = "";
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem(config.Headers.ACCESSTOKEN);
     },
     signOutFailed(state, { payload }) {
       state.isLoading = false;

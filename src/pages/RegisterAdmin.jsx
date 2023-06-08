@@ -1,10 +1,15 @@
 import { Card, Container, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import permissionAPI from "~/apis/permission";
 import Logo from "~/components/Logo";
 import Page from "~/components/Page";
+import { appActions } from "~/features/app/appSlice";
+import { authActions } from "~/features/authentication/authSlice";
 import useResponsive from "~/hooks/useResponsive";
+import { RegisterForm } from "~/sections/auth/register";
 
 const RootStyle = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
@@ -51,10 +56,23 @@ const ContentStyle = styled("div")(({ theme }) => ({
 
 export default function RegisterAdmin() {
   const smUp = useResponsive("up", "sm");
-
   const mdUp = useResponsive("up", "md");
-
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      const response = await permissionAPI.checkFirstStartApp();
+      if (response?.metadata.start) navigate(-1);
+    })();
+  }, []);
+
+  const handleSumbit = (values) => {
+    console.log("values", values);
+    dispatch(appActions.setOpenOverlay(true));
+    dispatch(appActions.setText("Đang đăng ký vui lòng đợi..."));
+    dispatch(authActions.signUpAdminStart(values));
+  };
 
   return (
     <Page title="Đăng ký admin">
@@ -86,14 +104,14 @@ export default function RegisterAdmin() {
         <Container>
           <ContentStyle>
             <Typography variant="h4" gutterBottom>
-              Bắt đầu hoàn toàn miễn phí.
+              Bắt đầu hoàn quản lý hệ thống.
             </Typography>
 
             <Typography sx={{ color: "text.secondary", mb: 5 }}>
-              Điền đầy đủ thông tin của bạn.
+              Điền đầy đủ thông tin dành cho Admin.
             </Typography>
 
-            {/* <RegisterForm onSubmit={handleSumbit} /> */}
+            <RegisterForm onSubmit={handleSumbit} />
 
             {!smUp && (
               <Typography variant="body2" sx={{ mt: 3, textAlign: "center" }}>
