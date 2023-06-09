@@ -4,6 +4,8 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const { AppMiddleware } = require("./middleware");
 const { ipAddress, deviceUserAgent } = require("./auth/ipAddress");
+const { SocketInit } = require("./socket.io");
+const configs = require("./config");
 
 require("./database/init.mongodb");
 
@@ -24,4 +26,8 @@ app.use("/", require("./routes"));
 app.use(AppMiddleware.catchNotFoundResourse);
 app.use(AppMiddleware.catchInternalServerError);
 
-module.exports = app;
+const { httpServer, io } = SocketInit.run(app);
+
+app.set(configs.socketIO.key, io);
+
+module.exports = httpServer;

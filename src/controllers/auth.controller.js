@@ -1,6 +1,8 @@
 "use strict";
 
-const { refreshTokenCookieOptions } = require("../const");
+const { Socket } = require("socket.io");
+const configs = require("../config");
+const { refreshTokenCookieOptions, Headers } = require("../const");
 const { BadRequestError } = require("../responses/error.response");
 const { Created, Ok } = require("../responses/success.response");
 const AuthService = require("../services/auth.service");
@@ -36,6 +38,8 @@ class AuthController {
    */
   signIn = async (req, res) => {
     const body = req.body;
+    const ip = req.ipClient;
+    const device = req.device;
 
     if (!body.password || !body.email) {
       throw new BadRequestError("Missing body `email`, `password`");
@@ -44,8 +48,8 @@ class AuthController {
     const response = await AuthService.signIn({
       password: body.password,
       email: body.email,
-      ip: req.ipClient,
-      device: req.device,
+      ip: ip,
+      device,
     });
 
     res.cookie(
@@ -215,8 +219,6 @@ class AuthController {
   verifyAdmin = async (req, res) => {
     const keyStore = req.keyStore;
     const codeAdmin = req.body.code;
-    const ip = req.ipClient;
-    const device = req.device;
 
     if (!codeAdmin) {
       throw new BadRequestError("Missing body code...");
@@ -232,8 +234,6 @@ class AuthController {
       metadata: await AuthService.verifyAdmin({
         id: keyStore.user,
         code: codeAdmin,
-        ip: "192.168.1.2",
-        device,
       }),
     }).send(res);
   };
@@ -250,9 +250,14 @@ class AuthController {
       throw new BadRequestError("Missing body userId...");
     }
 
+    /** @type {Socket} */
+    const io = req.app.get(configs.socketIO.key);
+
+    // console.log("[Socket io] => ", io);
+
     return new Ok({
       message: "Verify Admin Device Success.",
-      metadata: await AuthService.verifyAdminDevice(userId),
+      metadata: await AuthService.verifyAdminDevice(userId, io),
     }).send(res);
   };
 }

@@ -16,6 +16,9 @@ const configs = {
       process.env.KIXBOX_KEY ||
       "live_73006b9ba90fc062b1b180e198f122c04ec9afe164c41a378231aa411f52432f",
   },
+  socketIO: {
+    key: "socketIO",
+  },
 };
 
 module.exports = configs;

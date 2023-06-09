@@ -19,6 +19,7 @@ const Headers = {
   AUTHORIZATION: "authorization",
   CLIENT_ID: "x-client-id",
   REFRESH_TOKEN: "refreshtoken",
+  ACCESS_TOKEN: "accessToken",
 };
 
 const PermissionsApiKey = {

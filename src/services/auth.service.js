@@ -23,8 +23,9 @@ const UserService = require("./user.service");
 const configs = require("../config");
 const TokenService = require("../services/token.service");
 const { compareToken } = require("../respository/token.res");
-const { Roles, PermissionsApiKey } = require("../const");
+const { Roles, PermissionsApiKey, Headers } = require("../const");
 const ApiKeyService = require("./apiKey.service");
+const { Socket } = require("socket.io");
 
 class AuthService {
   static refreshToken = async ({ refreshToken, user, keyStore }) => {
@@ -71,7 +72,7 @@ class AuthService {
     };
   };
 
-  static verifyAdmin = async ({ id, code, ip, device }) => {
+  static verifyAdmin = async ({ id, code }) => {
     const user = await UserService.findUserById(id);
 
     if (!user) {
@@ -84,51 +85,31 @@ class AuthService {
       throw new ForbiddenRequestError("Sai mã code vui lòng thử lại...");
     }
 
-    const newDevice = {
-      ip,
-      device,
-    };
-
-    if (!user.user_login.length) {
-      user.user_login = [newDevice, ...user.user_login];
-      await user.save();
-    } else {
-      const deviceIndex = user.user_login.findIndex(
-        (item) => item.device === device && item.ip === ip
+    // Đã được xử lý ở login. Nếu khác thiết bị sẽ được đưa vào biến tạm
+    if (user.user_login_temp.length) {
+      throw new ForbiddenRequestError(
+        "Tài khoản của bạn đã đăng nhập ở nơi khác. Vui lòng xác thực email để được tiếp tục"
       );
-
-      if (deviceIndex === -1) {
-        // gửi mail xác thực
-        const date = new Date();
-        const userId = user._id;
-        const urlVerify = `${configs.baseUrlClient}/verify-admin-device?uId=${userId}`;
-
-        user.user_login_temp = [newDevice];
-
-        await user.save();
-
-        await EmailService.sendEmailVerifyAdmin({
-          toEmail: user.email,
-          device,
-          ip,
-          timeLogin: date,
-          urlVerify,
-        });
-
-        throw new ForbiddenRequestError(
-          "Tài khoản của bạn đã đăng nhập ở nơi khác. Vui lòng xác thực email để được tiếp tục"
-        );
-      }
     }
 
     return getInfoData({ fileds: ["full_name", "_id", "email"], object: user });
   };
 
-  static verifyAdminDevice = async (userId) => {
+  /**
+   *
+   * @param {import("mongoose").ObjectId} userId
+   * @param {Socket} io
+   * @returns
+   */
+  static verifyAdminDevice = async (userId, io) => {
     const user = await UserService.findUserById(userId);
 
     if (!user) {
       throw new ForbiddenRequestError("Bạn không có quyền truy cập!");
+    }
+
+    if (!user.user_login_temp.length) {
+      return true;
     }
 
     const loginTemp = user.user_login_temp[0];
@@ -137,6 +118,8 @@ class AuthService {
     user.user_login_temp = [];
 
     await user.save();
+
+    io.to(userId).emit("verify-admin-success", { success: true });
 
     return true;
   };
@@ -343,16 +326,45 @@ class AuthService {
 
     let isAdmin = false;
 
-    if (user.roles.includes(Roles.SUPPER_ADMIN)) {
-      isAdmin = true;
-    }
-
     const newDevice = {
       ip,
       device,
     };
 
-    user.user_login = [newDevice, ...user.user_login];
+    if (!user.user_login.length) {
+      user.user_login = [newDevice];
+    } else {
+      if (user.roles.includes(Roles.SUPPER_ADMIN)) {
+        const deviceIndex = user.user_login.findIndex(
+          (item) => item?.device === device && item?.ip === ip
+        );
+
+        isAdmin = true;
+
+        // Not found device login
+        if (deviceIndex === -1) {
+          const date = new Date();
+          const userId = user._id;
+          const urlVerify = `${configs.baseUrlClient}/verify-admin-device?uId=${userId}`;
+
+          // Transform login temp
+          user.user_login_temp = [newDevice];
+
+          // Send mail verify
+          await EmailService.sendEmailVerifyAdmin({
+            toEmail: user.email,
+            device,
+            ip,
+            timeLogin: date,
+            urlVerify,
+          });
+        } else {
+          user.user_login = [newDevice, ...user.user_login];
+        }
+      } else {
+        user.user_login = [newDevice, ...user.user_login];
+      }
+    }
 
     await user.save();
 

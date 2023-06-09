@@ -6,6 +6,7 @@ const configs = require("../config");
 const { Express } = require("express");
 const SocketMiddleware = require("../middleware/socket.middleware");
 const { AppMiddleware } = require("../middleware");
+const { Headers } = require("../const");
 
 class SocketInit {
   /**
@@ -26,10 +27,14 @@ class SocketInit {
     socketIO.use(SocketMiddleware.auth);
 
     socketIO.on("connect", (socket) => {
-      console.log("user connection: ", socket.id);
+      socket.join(socket[Headers.CLIENT_ID]);
+      console.log("user id: ", socket[Headers.CLIENT_ID]);
     });
 
-    return httpServer;
+    return {
+      io: socketIO,
+      httpServer,
+    };
   }
 }
 
