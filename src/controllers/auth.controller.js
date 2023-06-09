@@ -48,7 +48,7 @@ class AuthController {
     const response = await AuthService.signIn({
       password: body.password,
       email: body.email,
-      ip: "192.168.1.1",
+      ip: ip,
       device,
     });
 
