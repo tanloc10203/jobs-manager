@@ -6,16 +6,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Page from "~/components/Page";
 import { appActions } from "~/features/app/appSlice";
-import { authActions } from "~/features/authentication/authSlice";
+import { authActions, authState } from "~/features/authentication/authSlice";
+import socket from "~/socket.io/socketConnect";
 
 function VerifyAdmin(props) {
   const [code, setCode] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { error } = useSelector(authState);
 
   const handleOnClickConfirm = () => {
     if (!code) {
@@ -32,6 +36,30 @@ function VerifyAdmin(props) {
       })
     );
   };
+
+  useEffect(() => {
+    socket.connect();
+
+    let timer;
+
+    socket.on("verify-admin-success", (response) => {
+      console.log(response);
+
+      dispatch(appActions.setOpenOverlay(true));
+      dispatch(appActions.setText("Đang chuyển hướng..."));
+
+      timer = setTimeout(() => {
+        dispatch(appActions.setOpenOverlay(false));
+        dispatch(appActions.setText(""));
+        navigate("/manager/app", { replace: true });
+      }, 1500);
+    });
+
+    return () => {
+      socket.disconnect();
+      clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <Page title="Xác thực">
@@ -84,6 +112,7 @@ function VerifyAdmin(props) {
                   onClick={handleOnClickConfirm}
                   variant="outlined"
                   sx={{ mt: 6 }}
+                  disabled={error}
                 >
                   Xác nhận
                 </Button>
