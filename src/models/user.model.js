@@ -74,9 +74,9 @@ var userSchema = new mongoose.Schema(
       ],
       default: [],
     },
-    ip_address: {
-      type: String,
-      default: "",
+    ip_address_used: {
+      type: [String],
+      default: [],
     },
   },
   {

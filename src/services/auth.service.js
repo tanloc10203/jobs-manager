@@ -116,6 +116,7 @@ class AuthService {
 
     user.user_login = [loginTemp, ...user.user_login];
     user.user_login_temp = [];
+    user.ip_address_used = [loginTemp.ip, ...user.ip_address_used];
 
     await user.save();
 
@@ -188,6 +189,8 @@ class AuthService {
     }
 
     userHolder.verify = true;
+
+    userHolder.status = "active";
 
     if (userHolder.roles.includes(Roles.SUPPER_ADMIN)) {
       const keyAdmin = `${createOTP(16)}${createOTP(16)}`;
@@ -325,6 +328,7 @@ class AuthService {
     const tokens = await AuthService.generateKeyPairSyncLv2(user);
 
     let isAdmin = false;
+    let redirectVerifyAdmin = false;
 
     const newDevice = {
       ip,
@@ -335,29 +339,34 @@ class AuthService {
       user.user_login = [newDevice];
     } else {
       if (user.roles.includes(Roles.SUPPER_ADMIN)) {
-        const deviceIndex = user.user_login.findIndex(
-          (item) => item?.device === device && item?.ip === ip
-        );
-
         isAdmin = true;
 
-        // Not found device login
-        if (deviceIndex === -1) {
-          const date = new Date();
-          const userId = user._id;
-          const urlVerify = `${configs.baseUrlClient}/verify-admin-device?uId=${userId}`;
+        // Nếu địa chỉ ip không nằm trong địa chỉ ip đã từng sử dụng.
+        if (!user.ip_address_used.includes(ip)) {
+          redirectVerifyAdmin = true;
 
-          // Transform login temp
-          user.user_login_temp = [newDevice];
+          const deviceIndex = user.user_login.findIndex(
+            (item) => item?.device === device && item?.ip === ip
+          );
 
-          // Send mail verify
-          await EmailService.sendEmailVerifyAdmin({
-            toEmail: user.email,
-            device,
-            ip,
-            timeLogin: date,
-            urlVerify,
-          });
+          // Not found device login
+          if (deviceIndex === -1) {
+            const date = new Date();
+            const userId = user._id;
+            const urlVerify = `${configs.baseUrlClient}/verify-admin-device?uId=${userId}`;
+
+            // Transform login temp
+            user.user_login_temp = [newDevice];
+
+            // Send mail verify
+            await EmailService.sendEmailVerifyAdmin({
+              toEmail: user.email,
+              device,
+              ip,
+              timeLogin: date,
+              urlVerify,
+            });
+          }
         } else {
           user.user_login = [newDevice, ...user.user_login];
         }
@@ -372,6 +381,7 @@ class AuthService {
       user: {
         ...getInfoData({ fileds: ["_id", "full_name"], object: user }),
         isAdmin,
+        redirectVerifyAdmin,
       },
       tokens,
     };

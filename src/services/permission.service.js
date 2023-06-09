@@ -27,7 +27,7 @@ class PermissionService {
       password: passwordHash,
       email: email,
       roles: role,
-      ip_address: ipAddress,
+      ip_address_used: [ipAddress],
     });
 
     const user = await userInsert.save();
