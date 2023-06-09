@@ -10,15 +10,15 @@ const IP = require("ip");
  * @param {import("express").NextFunction} next
  */
 const ipAddress = (req, res, next) => {
-  // const ip =
-  //   req.headers["X-Client-IP"] ||
-  //   req.headers["x-forwarded-for"] ||
-  //   req.socket.remoteAddress;
+  const ip =
+    req.headers["X-Client-IP"] ||
+    req.headers["x-forwarded-for"] ||
+    req.socket.remoteAddress;
 
-  const ip = IP.address();
+  // const ip = IP.address();
 
-  // req.ipClient = cleanupAddress(ip);
-  req.ipClient = ip;
+  req.ipClient = cleanupAddress(ip);
+  // req.ipClient = ip;
 
   return next();
 };
