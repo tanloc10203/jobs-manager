@@ -140,7 +140,11 @@ function* fetchSignIn({ payload }) {
       localStorage.setItem(config.Headers.CLIENT_ID, user._id);
 
       if (user.isAdmin) {
-        yield call([history, history.push], "/verify-admin");
+        if (user.redirectVerifyAdmin) {
+          yield call([history, history.push], "/verify-admin");
+        } else {
+          yield call([history, history.push], "/manager/app");
+        }
       } else {
         yield call([history, history.push], "/");
       }
