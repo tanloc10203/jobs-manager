@@ -335,12 +335,14 @@ class AuthService {
       device,
     };
 
+    if (user.roles.includes(Roles.SUPPER_ADMIN)) {
+      isAdmin = true;
+    }
+
     if (!user.user_login.length) {
       user.user_login = [newDevice];
     } else {
       if (user.roles.includes(Roles.SUPPER_ADMIN)) {
-        isAdmin = true;
-
         // Nếu địa chỉ ip không nằm trong địa chỉ ip đã từng sử dụng.
         if (!user.ip_address_used.includes(ip)) {
           redirectVerifyAdmin = true;
