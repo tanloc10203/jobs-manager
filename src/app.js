@@ -6,6 +6,7 @@ const { AppMiddleware } = require("./middleware");
 const { ipAddress, deviceUserAgent } = require("./auth/ipAddress");
 const { SocketInit } = require("./socket.io");
 const configs = require("./config");
+const requestIp = require("request-ip");
 
 require("./database/init.mongodb");
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use(AppMiddleware.compression());
 app.use(AppMiddleware.session(app));
 
+app.use(requestIp.mw());
 app.use(ipAddress);
 app.use(deviceUserAgent);
 app.use("/", require("./routes"));
