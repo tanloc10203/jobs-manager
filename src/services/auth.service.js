@@ -345,14 +345,14 @@ class AuthService {
       if (user.roles.includes(Roles.SUPPER_ADMIN)) {
         // Nếu địa chỉ ip không nằm trong địa chỉ ip đã từng sử dụng.
         if (!user.ip_address_used.includes(ip)) {
-          redirectVerifyAdmin = true;
-
           const deviceIndex = user.user_login.findIndex(
             (item) => item?.device === device && item?.ip === ip
           );
 
           // Not found device login
           if (deviceIndex === -1) {
+            redirectVerifyAdmin = true;
+
             const date = new Date();
             const userId = user._id;
             const urlVerify = `${configs.baseUrlClient}/verify-admin-device?uId=${userId}`;
