@@ -65,34 +65,19 @@ export const navConfigHotel = [
     icon: getIcon("eva:pie-chart-2-fill"),
   },
   {
-    title: "Quản lý đặt phòng",
-    path: "/manager/booking",
-    icon: getIcon("tabler:brand-booking"),
+    title: "Quyền",
+    path: "/manager/permission",
+    icon: getIcon("icon-park-twotone:permissions"),
   },
   {
-    title: "Quản lý khách sạn",
-    path: "/manager/hotel",
-    icon: getIcon("carbon:manage-protection"),
+    title: "Thêm vai trò",
+    path: "/manager/role",
+    icon: getIcon("carbon:user-role"),
   },
   {
-    title: "Quản lý tầng",
-    path: "/manager/floor",
-    icon: getIcon("material-symbols:floor"),
-  },
-  {
-    title: "Quản lý thiết bị",
-    path: "/manager/device",
-    icon: getIcon("material-symbols:device-hub"),
-  },
-  {
-    title: "Quản lý phòng",
-    path: "/manager/room",
-    icon: getIcon("material-symbols:auto-meeting-room"),
-  },
-  {
-    title: "Quản lý doanh nghiệp",
-    path: "/manager/concern",
-    icon: getIcon("icon-park-outline:concern"),
+    title: "danh sách vai trò",
+    path: "/manager/list-role",
+    icon: getIcon("mdi:format-list-bulleted-type"),
   },
 ];
 

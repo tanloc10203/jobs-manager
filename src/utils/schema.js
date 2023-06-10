@@ -164,3 +164,11 @@ export const ProfileSchema = Yup.object().shape({
     .matches(phoneRegExp, "Số điện thoại không hợp lệ.")
     .required("Số điện thoại là trường bắt buộc"),
 });
+
+export const PermissionSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(5, "Quá ngắn!")
+    .required("Tên quyền là trường bắt buộc"),
+  slug: Yup.string().min(5, "Quá ngắn!").required("Slug là trường bắt buộc"),
+  desc: Yup.string().min(5, "Quá ngắn!").required("Mô tả là trường bắt buộc"),
+});

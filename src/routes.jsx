@@ -34,6 +34,17 @@ const VerifyAdminDevice = Loadable(
   lazy(() => import("./pages/VerifyAdminDevice"))
 );
 
+// Manager role
+const ListRoleManagePage = Loadable(
+  lazy(() => import("./features/@dashboard/pages/role/Role"))
+);
+const AddRoleManagePage = Loadable(
+  lazy(() => import("./features/@dashboard/pages/role/AddRole"))
+);
+const PermissionManagePage = Loadable(
+  lazy(() => import("./features/@dashboard/pages/permission/Permission"))
+);
+
 // Manager hotel
 const HotelManagePage = Loadable(
   lazy(() => import("./features/@dashboard/pages/hotels/Hotel"))
@@ -117,6 +128,18 @@ export default function Router() {
         {
           path: "hotel",
           element: <HotelManagePage />,
+        },
+        {
+          path: "list-role",
+          element: <ListRoleManagePage />,
+        },
+        {
+          path: "role",
+          element: <AddRoleManagePage />,
+        },
+        {
+          path: "permission",
+          element: <PermissionManagePage />,
         },
         {
           path: "hotel/add",
