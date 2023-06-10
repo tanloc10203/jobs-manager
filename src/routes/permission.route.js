@@ -11,4 +11,13 @@ router.post(
   AppMiddleware.catchErrorHandler(permissController.createAdmin)
 );
 
+router.get(
+  "/all",
+  AppMiddleware.catchErrorHandler(permissController.getAllPermission)
+);
+router.post(
+  "/add",
+  AppMiddleware.catchErrorHandler(permissController.createPermission)
+);
+
 module.exports = router;

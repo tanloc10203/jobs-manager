@@ -1,3 +1,4 @@
+const permissionModel = require("../models/permission.model");
 const { ForbiddenRequestError } = require("../responses/error.response");
 const { findUserIsAdmin } = require("./user.res");
 
@@ -28,6 +29,32 @@ const isAdminFirstStartApplication = async () => {
   };
 };
 
+const findByName = async (name) => {
+  return await permissionModel.findOne({ name });
+};
+
+const findBySlug = async (slug) => {
+  return await permissionModel.findOne({ slug });
+};
+
+const insertPermission = async ({ name, slug, desc }) => {
+  const insert = new permissionModel({
+    name,
+    slug,
+    desc,
+  });
+
+  return await insert.save();
+};
+
+const getAll = async (filters = {}) => {
+  return await permissionModel.find().lean();
+};
+
 module.exports = {
   isAdminFirstStartApplication,
+  findByName,
+  findBySlug,
+  insertPermission,
+  getAll,
 };

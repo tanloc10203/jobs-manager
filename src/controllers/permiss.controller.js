@@ -60,6 +60,44 @@ class PermissionController {
       },
     }).send(res);
   };
+
+  /**
+   *
+   * @param {import("express").Request} req
+   * @param {import("express").Response} res
+   * @returns
+   */
+  createPermission = async (req, res) => {
+    const body = req.body;
+
+    if (!body.name || !body.slug || !body.desc) {
+      throw new BadRequestError("Missing body data name, slug, desc");
+    }
+
+    return new Ok({
+      message: "Create Permission Success",
+      metadata: await PermissionService.createPermission({
+        name: body.name,
+        slug: body.slug,
+        desc: body.desc,
+      }),
+    }).send(res);
+  };
+
+  /**
+   *
+   * @param {import("express").Request} req
+   * @param {import("express").Response} res
+   * @returns
+   */
+  getAllPermission = async (req, res) => {
+    const filters = req.query;
+
+    return new Ok({
+      message: "Get All Permission Success",
+      metadata: await PermissionService.getAllPermission(filters),
+    }).send(res);
+  };
 }
 
 module.exports = new PermissionController();

@@ -6,6 +6,13 @@ const userModel = require("../models/user.model");
 const { getInfoData } = require("../utils");
 const EmailService = require("./email.service");
 const ApiKeyService = require("./apiKey.service");
+const {
+  findByName,
+  findBySlug,
+  insertPermission,
+  getAll,
+} = require("../respository/permission.res");
+const { ConflictRequestError } = require("../responses/error.response");
 
 class PermissionService {
   static createAdmin = async ({ ipAddress, fullName, password, email }) => {
@@ -51,6 +58,42 @@ class PermissionService {
       }),
       apiKey: apiKeyStore.key,
     };
+  };
+
+  static createPermission = async ({ name, slug, desc }) => {
+    if (await findByName(name)) {
+      throw new ConflictRequestError("Tên quyền đã tồn tại.");
+    }
+
+    if (await findBySlug(slug)) {
+      throw new ConflictRequestError("Slug đã tồn tại.");
+    }
+
+    return await insertPermission({ name, slug, desc });
+  };
+
+  static updatePermission = async ({ name, slug, desc, id }) => {
+    let permission = await findByName(name);
+
+    if (permission && permission._id.toString() !== id) {
+      throw new ConflictRequestError("Tên quyền đã tồn tại.");
+    }
+
+    permission = await findBySlug(slug);
+
+    if (permission && permission._id.toString() !== id) {
+      throw new ConflictRequestError("Slug đã tồn tại.");
+    }
+
+    permission.name = name;
+    permission.slug = slug;
+    permission.desc = desc;
+
+    return await permission.save();
+  };
+
+  static getAllPermission = async (filters = {}) => {
+    return await getAll(filters);
   };
 }
 
