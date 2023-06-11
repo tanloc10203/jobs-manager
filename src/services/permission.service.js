@@ -93,7 +93,42 @@ class PermissionService {
   };
 
   static getAllPermission = async (filters = {}) => {
-    return await getAll(filters);
+    const response = await getAll(filters);
+
+    let name = "";
+    let result = [];
+
+    response.map((item) => {
+      const splitSlug = item.slug.split("."); // product.add => ['product', 'add'];
+
+      if (!name || name != splitSlug[0].toLocaleLowerCase()) {
+        name = splitSlug[0];
+      }
+
+      if (!result.length) {
+        const module = {
+          name,
+          child: [item],
+        };
+
+        result.push(module);
+      } else {
+        const findIndex = result.findIndex((i) => i.name === name);
+
+        if (findIndex === -1) {
+          const module = {
+            name,
+            child: [item],
+          };
+
+          result.push(module);
+        } else {
+          result[findIndex].child = [item, ...result[findIndex].child];
+        }
+      }
+    });
+
+    return result;
   };
 }
 

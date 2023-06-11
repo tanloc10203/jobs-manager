@@ -19,5 +19,9 @@ router.post(
   "/add",
   AppMiddleware.catchErrorHandler(permissController.createPermission)
 );
+router.patch(
+  "/:id",
+  AppMiddleware.catchErrorHandler(permissController.updatePermission)
+);
 
 module.exports = router;

@@ -90,6 +90,31 @@ class PermissionController {
    * @param {import("express").Response} res
    * @returns
    */
+  updatePermission = async (req, res) => {
+    const body = req.body;
+    const id = req.params.id;
+
+    if (!body.name || !body.slug || !body.desc) {
+      throw new BadRequestError("Missing body data name, slug, desc");
+    }
+
+    return new Ok({
+      message: "Create Permission Success",
+      metadata: await PermissionService.updatePermission({
+        name: body.name,
+        slug: body.slug,
+        desc: body.desc,
+        id,
+      }),
+    }).send(res);
+  };
+
+  /**
+   *
+   * @param {import("express").Request} req
+   * @param {import("express").Response} res
+   * @returns
+   */
   getAllPermission = async (req, res) => {
     const filters = req.query;
 

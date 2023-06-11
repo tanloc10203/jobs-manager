@@ -8,6 +8,7 @@ const router = Router();
 router.use(AppMiddleware.catchErrorHandler(apiKey));
 
 router.use("/api/v1/permission", require("./permission.route"));
+router.use("/api/v1/role", require("./role.route"));
 router.use("/api/v1/api-key", require("./apiKey.route"));
 router.use("/api/v1/auth", require("./auth.route"));
 router.use("/api/v1/user", require("./user.route"));
