@@ -172,3 +172,10 @@ export const PermissionSchema = Yup.object().shape({
   slug: Yup.string().min(5, "Quá ngắn!").required("Slug là trường bắt buộc"),
   desc: Yup.string().min(5, "Quá ngắn!").required("Mô tả là trường bắt buộc"),
 });
+
+export const RoleSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(5, "Quá ngắn!")
+    .required("Tên vai trò là trường bắt buộc"),
+  desc: Yup.string().min(5, "Quá ngắn!").required("Mô tả là trường bắt buộc"),
+});

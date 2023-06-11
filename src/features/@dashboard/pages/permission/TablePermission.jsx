@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { IconButton } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
@@ -24,7 +24,7 @@ const columns = [
   },
 ];
 
-export default function TablePermission({ rows = [] }) {
+export default function TablePermission({ rows = [], onUpdate }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -36,6 +36,52 @@ export default function TablePermission({ rows = [] }) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const renderItem = React.useCallback((row, index) => {
+    return (
+      <>
+        <TableRow
+          hover
+          tabIndex={-1}
+          key={index}
+          sx={{ bgcolor: !row._id ? "#ededed" : null }}
+        >
+          <TableCell>
+            <Typography textTransform="capitalize" fontWeight="bold">
+              {row.name}
+            </Typography>
+          </TableCell>
+          <TableCell></TableCell>
+          <TableCell></TableCell>
+          <TableCell align="right"></TableCell>
+        </TableRow>
+
+        {row.child &&
+          row.child.length &&
+          row.child.map((item, idx) => (
+            <TableRow hover tabIndex={-1} key={idx}>
+              <TableCell>{item._id}</TableCell>
+              <TableCell>
+                <Typography>{item.name}</Typography>
+              </TableCell>
+              <TableCell>{item.slug}</TableCell>
+              <TableCell align="right">
+                <IconButton aria-label="delete" color="error">
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton
+                  aria-label="edit"
+                  color="info"
+                  onClick={() => onUpdate(item)}
+                >
+                  <EditRoundedIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
+      </>
+    );
+  });
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -56,21 +102,9 @@ export default function TablePermission({ rows = [] }) {
           </TableHead>
           <TableBody>
             {rows.length &&
-              rows.map((row, index) => (
-                <TableRow hover tabIndex={-1} key={index}>
-                  <TableCell>{row._id}</TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.slug}</TableCell>
-                  <TableCell align="right">
-                    <IconButton aria-label="delete" color="error">
-                      <DeleteIcon />
-                    </IconButton>
-                    <IconButton aria-label="edit" color="info">
-                      <EditRoundedIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+              rows.map((row, index) => {
+                return renderItem(row, index);
+              })}
           </TableBody>
         </Table>
       </TableContainer>

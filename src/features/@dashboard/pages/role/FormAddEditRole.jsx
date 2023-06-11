@@ -1,10 +1,18 @@
 import { LoadingButton } from "@mui/lab";
-import { TextField } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Form, FormikProvider, useFormik } from "formik";
 import PropTypes from "prop-types";
+import FormGroupPer from "./FormGroupPer";
 
-function FormAddEditPermission(props) {
-  const { initialValues, schema, onSubmit, loading } = props;
+function FormAddEditRole(props) {
+  const { initialValues, schema, onSubmit, loading, pers, onChangePer } = props;
 
   const formik = useFormik({
     initialValues,
@@ -22,19 +30,10 @@ function FormAddEditPermission(props) {
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <TextField
           fullWidth
-          label="Tên quyền"
+          label="Tên vai trò"
           {...getFieldProps("name")}
           error={Boolean(touched.name && errors.name)}
           helperText={touched.name && errors.name}
-          margin="normal"
-        />
-
-        <TextField
-          fullWidth
-          label="Slug"
-          {...getFieldProps("slug")}
-          error={Boolean(touched.slug && errors.slug)}
-          helperText={(touched.slug && errors.slug) || "VD: product.add"}
           margin="normal"
         />
 
@@ -49,6 +48,15 @@ function FormAddEditPermission(props) {
           margin="normal"
         />
 
+        <Box my={2}>
+          <Typography fontWeight="bold">Vai trò này có quyền gì?</Typography>
+          <Typography fontWeight={300} fontSize={14} mt={1} color="gray">
+            Check vào module hoặc các hành động bên dưới để chọn quyền.
+          </Typography>
+        </Box>
+
+        <FormGroupPer pers={pers} onChange={onChangePer} />
+
         <LoadingButton
           sx={{ mt: 2 }}
           type="submit"
@@ -62,11 +70,12 @@ function FormAddEditPermission(props) {
   );
 }
 
-FormAddEditPermission.propTypes = {
+FormAddEditRole.propTypes = {
   initialValues: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool,
+  pers: PropTypes.array,
 };
 
-export default FormAddEditPermission;
+export default FormAddEditRole;

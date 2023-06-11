@@ -15,8 +15,8 @@ const permissionAPI = {
   getPermission: (filters) => {
     return instance.get(url + "/all", filters);
   },
-  updatePermission: (id) => {
-    return instance.patch(`${url}/${id}`);
+  updatePermission: (id, data) => {
+    return instance.patch(`${url}/${id}`, data);
   },
   deletePermission: (id) => {
     return instance.delete(`${url}/${id}`);
